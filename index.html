@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genética: Leyes de Mendel y grupos sanguíneos</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #1F4E79;
+  --primary-light: #2E75B6;
+  --primary-dark: #163b5c;
+  --bg-page: #FAFBFD;
+  --bg-card: #FFFFFF;
+  --text: #1A2332;
+  --text-soft: #5A6478;
+  --text-muted: #8995A8;
+  --border: #E1E6ED;
+  --color-A: #FFC107;
+  --color-A-dark: #E65100;
+  --color-B: #43A047;
+  --color-B-dark: #1B5E20;
+  --color-O: #9E9E9E;
+  --color-O-dark: #424242;
+  --color-AB: #7B1FA2;
+  --success: #2E7D32;
+  --success-bg: #E8F5E9;
+  --error: #C62828;
+  --error-bg: #FFEBEE;
+  --warning: #E65100;
+  --warning-bg: #FFF3E0;
+  --shadow-sm: 0 2px 8px rgba(31, 78, 121, 0.06);
+  --shadow-md: 0 4px 16px rgba(31, 78, 121, 0.10);
+  --shadow-lg: 0 12px 32px rgba(31, 78, 121, 0.16);
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --serif: 'Crimson Pro', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  background: var(--bg-page);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 24px 16px;
+  line-height: 1.6;
+}
+.container { max-width: 980px; margin: 0 auto; }
+
+.main-header { text-align: center; padding: 40px 20px 32px; margin-bottom: 32px; }
+.main-header .eyebrow {
+  font-size: 0.8rem; letter-spacing: 2.5px; color: var(--text-muted);
+  text-transform: uppercase; font-weight: 600; margin-bottom: 12px;
+}
+.main-header h1 {
+  font-family: var(--serif); font-weight: 700;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  color: var(--primary); letter-spacing: -0.5px; line-height: 1.15; margin-bottom: 14px;
+}
+.main-header p {
+  color: var(--text-soft); font-size: 1.05rem; max-width: 640px; margin: 0 auto;
+}
+.decor {
+  display: inline-flex; align-items: center; gap: 12px;
+  margin: 18px 0 28px; color: var(--primary-light); font-size: 1.4rem;
+}
+.decor::before, .decor::after {
+  content: ''; width: 60px; height: 1px; background: var(--border);
+}
+
+.menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+.game-card {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  padding: 28px 24px; box-shadow: var(--shadow-sm); cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border); position: relative; overflow: hidden;
+}
+.game-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;
+}
+.game-card:hover {
+  transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary-light);
+}
+.game-card:hover::before { transform: scaleX(1); }
+.card-top {
+  display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;
+}
+.card-icon {
+  width: 52px; height: 52px; border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; flex-shrink: 0;
+}
+.card-icon.icon-1 { background: #FFF8E1; }
+.card-icon.icon-2 { background: #E8F5E9; }
+.card-icon.icon-3 { background: #E3F2FD; }
+.card-icon.icon-4 { background: #FCE4EC; }
+.card-icon.icon-5 { background: #F3E5F5; }
+.card-level {
+  font-size: 0.7rem; letter-spacing: 1.5px; font-weight: 700;
+  text-transform: uppercase; padding: 5px 11px; border-radius: 12px;
+  background: var(--bg-page); color: var(--text-muted);
+}
+.card-level.lvl-1 { color: var(--color-B); background: #E8F5E9; }
+.card-level.lvl-2 { color: var(--primary-light); background: #E3F2FD; }
+.card-level.lvl-3 { color: var(--warning); background: #FFF3E0; }
+.game-card h2 {
+  font-family: var(--serif); font-weight: 700; font-size: 1.4rem;
+  color: var(--primary); margin-bottom: 8px; letter-spacing: -0.3px;
+}
+.game-card p.desc {
+  color: var(--text-soft); font-size: 0.95rem; line-height: 1.55;
+}
+
+.game-screen {
+  display: none; background: var(--bg-card); border-radius: var(--radius-lg);
+  padding: 32px; box-shadow: var(--shadow-md); animation: fadeUp 0.3s ease;
+}
+.game-screen.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.game-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--border);
+  flex-wrap: wrap; gap: 12px;
+}
+.btn-back {
+  background: none; color: var(--primary); border: 1px solid var(--border);
+  padding: 9px 18px; border-radius: var(--radius); font-size: 0.9rem;
+  cursor: pointer; font-weight: 600; font-family: inherit; transition: all 0.2s;
+}
+.btn-back:hover { background: var(--bg-page); border-color: var(--primary-light); }
+.score-pill {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--primary); color: white; padding: 9px 18px;
+  border-radius: var(--radius); font-weight: 600; font-size: 0.95rem;
+}
+.score-pill .divider { opacity: 0.4; }
+.game-screen h2.title {
+  font-family: var(--serif); font-size: 1.8rem; color: var(--primary);
+  margin-bottom: 8px; font-weight: 700;
+}
+.game-screen .subtitle { color: var(--text-soft); margin-bottom: 18px; }
+.instructions {
+  background: linear-gradient(135deg, #FFFEF5 0%, #FFF8E1 100%);
+  border-left: 3px solid var(--warning); padding: 14px 20px;
+  border-radius: var(--radius-sm); margin-bottom: 28px;
+  font-size: 0.95rem; color: var(--text);
+}
+
+.options-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 22px;
+}
+.options-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.options-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 600px) {
+  .options-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+}
+.option-btn {
+  background: white; border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 18px 16px; font-size: 1.05rem; font-weight: 600; color: var(--primary);
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
+  text-align: center; line-height: 1.4;
+}
+.option-btn:hover:not(:disabled) {
+  border-color: var(--primary-light); background: #F8FAFD;
+  transform: translateY(-1px); box-shadow: var(--shadow-sm);
+}
+.option-btn:disabled { cursor: not-allowed; opacity: 0.6; }
+.option-btn.correct {
+  background: var(--success-bg); border-color: var(--success);
+  color: var(--success); animation: pulse 0.5s ease;
+}
+.option-btn.wrong {
+  background: var(--error-bg); border-color: var(--error);
+  color: var(--error); animation: shake 0.4s ease;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.feedback {
+  margin-top: 22px; padding: 16px 20px; border-radius: var(--radius);
+  font-size: 0.98rem; display: none; animation: fadeUp 0.3s ease;
+}
+.feedback.show { display: block; }
+.feedback.success {
+  background: var(--success-bg); color: var(--success); border-left: 3px solid var(--success);
+}
+.feedback.error {
+  background: var(--warning-bg); color: var(--warning); border-left: 3px solid var(--warning);
+}
+.feedback strong { font-weight: 700; }
+.feedback .explanation {
+  margin-top: 6px; font-size: 0.92rem; font-weight: 400; opacity: 0.9;
+}
+.next-btn {
+  display: block; margin: 24px auto 0;
+  background: var(--primary); color: white; border: none;
+  padding: 13px 36px; border-radius: var(--radius);
+  font-size: 1.02rem; font-weight: 600; cursor: pointer;
+  font-family: inherit; transition: background 0.2s;
+}
+.next-btn:hover { background: var(--primary-dark); }
+.scene {
+  background: linear-gradient(135deg, #F8FAFD 0%, #F0F4F9 100%);
+  border-radius: var(--radius); padding: 28px 24px;
+  margin-bottom: 6px; border: 1px solid var(--border);
+}
+.scene .scene-title {
+  font-family: var(--serif); font-size: 1.05rem; color: var(--text-soft);
+  font-style: italic; margin-bottom: 16px; text-align: center;
+}
+
+.law-cross {
+  display: flex; justify-content: center; align-items: center;
+  gap: 16px; margin: 18px 0; flex-wrap: wrap;
+}
+.cross-symbol {
+  font-size: 1.8rem; font-weight: 600; color: var(--primary);
+}
+.parent-card {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  background: white; padding: 14px 20px; border-radius: var(--radius);
+  border: 1px solid var(--border); min-width: 110px;
+}
+.parent-card .geno {
+  font-family: var(--serif); font-size: 1.3rem; font-weight: 700; color: var(--primary);
+}
+.parent-card .pheno { font-size: 0.82rem; color: var(--text-soft); }
+.outcome {
+  text-align: center; font-size: 1.05rem; color: var(--text);
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+}
+.outcome strong { color: var(--primary); font-family: var(--serif); }
+
+.dihibrid-cross {
+  background: white; padding: 20px; border-radius: var(--radius);
+  margin-bottom: 16px; border: 1px solid var(--border);
+}
+.dihibrid-info {
+  font-size: 0.92rem; color: var(--text-soft);
+  text-align: center; margin-bottom: 12px;
+}
+
+.parents-row {
+  display: flex; justify-content: center; gap: 24px;
+  margin: 16px 0; flex-wrap: wrap;
+}
+.parent-blood {
+  background: white; padding: 16px 22px; border-radius: var(--radius);
+  border: 1px solid var(--border); text-align: center; min-width: 130px;
+}
+.parent-blood .role {
+  font-size: 0.78rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 4px;
+}
+.parent-blood .bgroup {
+  font-family: var(--serif); font-size: 1.6rem; font-weight: 700;
+  color: var(--primary); margin-bottom: 4px;
+}
+.parent-blood .geno {
+  font-family: var(--serif); color: var(--text-soft); font-size: 0.95rem;
+}
+
+.pedigree-svg-wrap {
+  display: flex; justify-content: center; margin: 12px 0 18px;
+  background: white; padding: 16px; border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.pedigree-svg-wrap svg { max-width: 100%; height: auto; }
+
+.celebration { text-align: center; padding: 32px 20px; }
+.celebration .emoji {
+  font-size: 3.6rem; margin-bottom: 14px; animation: bounce 0.6s ease;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+.celebration h3 {
+  font-family: var(--serif); font-size: 1.7rem; color: var(--primary);
+  margin-bottom: 14px; font-weight: 700;
+}
+.celebration .stat { font-size: 1.1rem; color: var(--text-soft); margin-bottom: 8px; }
+.celebration .stat strong { color: var(--primary); font-weight: 700; }
+.celebration .pct {
+  display: inline-block; background: var(--primary); color: white;
+  font-family: var(--serif); font-size: 2.4rem; font-weight: 700;
+  padding: 8px 28px; border-radius: var(--radius); margin: 14px 0;
+}
+
+/* ===== Métricas con tiempo (porcentaje + tiempo lado a lado) ===== */
+.metrics-row {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 22px 0 18px;
+  flex-wrap: wrap;
+}
+.metric {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 26px;
+  min-width: 160px;
+  box-shadow: var(--shadow-sm);
+}
+.metric-label {
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.metric-value {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.1;
+}
+.metric-sub {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  margin-top: 4px;
+}
+
+/* ===== RETROALIMENTACIÓN DETALLADA ===== */
+.feedback-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.feedback-section h4 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.feedback-section .section-intro {
+  text-align: center;
+  color: var(--text-soft);
+  margin-bottom: 22px;
+  font-size: 0.98rem;
+}
+
+.topic-analysis {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.topic-analysis .topic-name {
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  min-width: 180px;
+}
+.topic-analysis .topic-bar-wrap {
+  flex: 2;
+  min-width: 200px;
+  height: 12px;
+  background: var(--bg-page);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.topic-analysis .topic-bar {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+.topic-analysis .topic-bar.bar-strong { background: var(--success); }
+.topic-analysis .topic-bar.bar-medium { background: var(--warning); }
+.topic-analysis .topic-bar.bar-weak { background: var(--error); }
+.topic-analysis .topic-stat {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 0.95rem;
+  min-width: 70px;
+  text-align: right;
+}
+
+.summary-box {
+  background: linear-gradient(135deg, #F8FAFD 0%, #F0F4F9 100%);
+  border-left: 4px solid var(--primary);
+  padding: 18px 22px;
+  border-radius: var(--radius);
+  margin: 22px 0;
+}
+.summary-box h5 {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--primary);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.summary-box ul {
+  list-style: none;
+  padding: 0;
+}
+.summary-box li {
+  padding: 6px 0 6px 24px;
+  position: relative;
+  font-size: 0.96rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.summary-box li::before {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  font-size: 0.95rem;
+}
+.summary-box.strengths li::before { content: '✓'; color: var(--success); font-weight: 700; }
+.summary-box.weaknesses li::before { content: '!'; color: var(--warning); font-weight: 700; }
+.summary-box.strengths { border-left-color: var(--success); }
+.summary-box.weaknesses { border-left-color: var(--warning); }
+
+.review-list {
+  margin-top: 22px;
+}
+.review-toggle {
+  display: block;
+  width: 100%;
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-align: left;
+  transition: background 0.2s;
+}
+.review-toggle:hover { background: #EEF2F7; }
+.review-toggle .arrow { float: right; transition: transform 0.3s; }
+.review-toggle.open .arrow { transform: rotate(180deg); }
+
+.review-items {
+  display: none;
+  margin-top: 14px;
+}
+.review-items.open { display: block; }
+
+.review-item {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+.review-item.correct { border-left-color: var(--success); }
+.review-item.wrong { border-left-color: var(--error); }
+.review-item .ri-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.review-item .ri-num {
+  font-weight: 700;
+  color: var(--primary);
+}
+.review-item .ri-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+.review-item .ri-status.ok { background: var(--success-bg); color: var(--success); }
+.review-item .ri-status.no { background: var(--error-bg); color: var(--error); }
+.review-item .ri-topic {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.review-item .ri-q {
+  color: var(--text-soft);
+  margin-bottom: 8px;
+  font-style: italic;
+}
+.review-item .ri-answers {
+  font-size: 0.92rem;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+.review-item .ri-answers .label {
+  color: var(--text-muted);
+  font-weight: 600;
+  display: inline-block;
+  min-width: 95px;
+}
+.review-item .ri-answers .your-ans.correct-text { color: var(--success); font-weight: 600; }
+.review-item .ri-answers .your-ans.wrong-text { color: var(--error); font-weight: 600; }
+.review-item .ri-answers .correct-ans { color: var(--success); font-weight: 600; }
+.review-item .ri-explanation {
+  background: var(--bg-page);
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+footer {
+  text-align: center; margin-top: 56px; padding: 24px;
+  color: var(--text-muted); font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  body { padding: 16px 12px; }
+  .game-screen { padding: 22px 18px; }
+  .options-grid { grid-template-columns: 1fr; }
+  .options-grid.cols-3 { grid-template-columns: 1fr; }
+  .law-cross { gap: 10px; }
+  .parent-card { padding: 10px 14px; min-width: 90px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div id="menu-screen">
+  <header class="main-header">
+    <div class="eyebrow">Ciencias Naturales · Grado 9°</div>
+    <h1>Genética: Mendel y los grupos sanguíneos</h1>
+    <div class="decor">⚛</div>
+    <p>Pon a prueba tus conocimientos sobre las leyes de Mendel, los cuadros de Punnett y la herencia de los grupos sanguíneos a través de cinco juegos progresivos.</p>
+  </header>
+  <div class="menu">
+    <div class="game-card" tabindex="0" onclick="showGame(1)">
+      <div class="card-top"><div class="card-icon icon-1">📚</div><span class="card-level lvl-1">Nivel 1</span></div>
+      <h2>Identifica la ley</h2>
+      <p class="desc">Observa cada cruce y reconoce qué ley de Mendel se aplica: uniformidad, segregación o distribución independiente.</p>
+    </div>
+    <div class="game-card" tabindex="0" onclick="showGame(2)">
+      <div class="card-top"><div class="card-icon icon-2">🌱</div><span class="card-level lvl-1">Nivel 1</span></div>
+      <h2>Cruces monohíbridos</h2>
+      <p class="desc">Resuelve cruces de un solo carácter. Predice genotipos y fenotipos con proporciones exactas.</p>
+    </div>
+    <div class="game-card" tabindex="0" onclick="showGame(3)">
+      <div class="card-top"><div class="card-icon icon-3">🧬</div><span class="card-level lvl-2">Nivel 2</span></div>
+      <h2>Cruces dihíbridos</h2>
+      <p class="desc">Aplica la 3ª ley con dos caracteres simultáneos. Calcula la proporción 9 : 3 : 3 : 1.</p>
+    </div>
+    <div class="game-card" tabindex="0" onclick="showGame(4)">
+      <div class="card-top"><div class="card-icon icon-4">🩸</div><span class="card-level lvl-2">Nivel 2</span></div>
+      <h2>Sistema ABO</h2>
+      <p class="desc">Codominancia y alelos múltiples. Calcula probabilidades de grupos sanguíneos en la descendencia.</p>
+    </div>
+    <div class="game-card" tabindex="0" onclick="showGame(5)">
+      <div class="card-top"><div class="card-icon icon-5">🌳</div><span class="card-level lvl-3">Nivel 3</span></div>
+      <h2>Árbol genealógico</h2>
+      <p class="desc">Reto integrador. Analiza familias y deduce los genotipos posibles aplicando todo lo aprendido.</p>
+    </div>
+  </div>
+  <footer>Material educativo · Genética mendeliana y herencia ABO . Docente: Samara Irina</footer>
+</div>
+
+<div id="game1-screen" class="game-screen">
+  <div class="game-header">
+    <button class="btn-back" onclick="showMenu()">← Menú</button>
+    <div class="score-pill">
+      <span><span id="score1">0</span> aciertos</span>
+      <span class="divider">·</span>
+      <span>pregunta <span id="round1">1</span> / <span id="total1">10</span></span>
+    </div>
+  </div>
+  <h2 class="title">Identifica la ley de Mendel</h2>
+  <p class="subtitle">Reconoce qué principio mendeliano se ilustra en cada cruce.</p>
+  <div class="instructions">Cada pregunta muestra un cruce genético. Lee el genotipo de los progenitores y la descendencia obtenida, y selecciona qué ley de Mendel explica el resultado.</div>
+  <div id="game1-content"></div>
+  <div id="game1-end" style="display:none;"></div>
+</div>
+
+<div id="game2-screen" class="game-screen">
+  <div class="game-header">
+    <button class="btn-back" onclick="showMenu()">← Menú</button>
+    <div class="score-pill">
+      <span><span id="score2">0</span> aciertos</span>
+      <span class="divider">·</span>
+      <span>pregunta <span id="round2">1</span> / <span id="total2">10</span></span>
+    </div>
+  </div>
+  <h2 class="title">Cruces monohíbridos</h2>
+  <p class="subtitle">Predice las proporciones genotípicas y fenotípicas.</p>
+  <div class="instructions">A partir del genotipo de los progenitores, identifica la proporción esperada en la descendencia.</div>
+  <div id="game2-content"></div>
+  <div id="game2-end" style="display:none;"></div>
+</div>
+
+<div id="game3-screen" class="game-screen">
+  <div class="game-header">
+    <button class="btn-back" onclick="showMenu()">← Menú</button>
+    <div class="score-pill">
+      <span><span id="score3">0</span> aciertos</span>
+      <span class="divider">·</span>
+      <span>pregunta <span id="round3">1</span> / <span id="total3">10</span></span>
+    </div>
+  </div>
+  <h2 class="title">Cruces dihíbridos</h2>
+  <p class="subtitle">3ª Ley de Mendel: distribución independiente.</p>
+  <div class="instructions">En estos cruces se consideran dos caracteres a la vez. Aplica la regla del producto y la proporción 9:3:3:1 cuando corresponda.</div>
+  <div id="game3-content"></div>
+  <div id="game3-end" style="display:none;"></div>
+</div>
+
+<div id="game4-screen" class="game-screen">
+  <div class="game-header">
+    <button class="btn-back" onclick="showMenu()">← Menú</button>
+    <div class="score-pill">
+      <span><span id="score4">0</span> aciertos</span>
+      <span class="divider">·</span>
+      <span>pregunta <span id="round4">1</span> / <span id="total4">10</span></span>
+    </div>
+  </div>
+  <h2 class="title">Sistema ABO: codominancia</h2>
+  <p class="subtitle">Calcula probabilidades en la herencia de grupos sanguíneos.</p>
+  <div class="instructions">Recuerda: I<sup>A</sup> e I<sup>B</sup> son codominantes; ambos dominan sobre i. Calcula la probabilidad de cada grupo sanguíneo en la descendencia.</div>
+  <div id="game4-content"></div>
+  <div id="game4-end" style="display:none;"></div>
+</div>
+
+<div id="game5-screen" class="game-screen">
+  <div class="game-header">
+    <button class="btn-back" onclick="showMenu()">← Menú</button>
+    <div class="score-pill">
+      <span><span id="score5">0</span> aciertos</span>
+      <span class="divider">·</span>
+      <span>pregunta <span id="round5">1</span> / <span id="total5">10</span></span>
+    </div>
+  </div>
+  <h2 class="title">Análisis de árbol genealógico</h2>
+  <p class="subtitle">Aplicación integradora: deduce genotipos a partir de familias.</p>
+  <div class="instructions">Cuadrados = hombres · Círculos = mujeres. Líneas horizontales = matrimonio · Líneas verticales = descendencia. Estudia el árbol cuidadosamente antes de responder.</div>
+  <div id="game5-content"></div>
+  <div id="game5-end" style="display:none;"></div>
+</div>
+</div>
+
+<script>
+function showMenu() {
+  document.getElementById('menu-screen').style.display = 'block';
+  document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function showGame(n) {
+  document.getElementById('menu-screen').style.display = 'none';
+  document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('game' + n + '-screen').classList.add('active');
+  if (n === 1) startGame1();
+  if (n === 2) startGame2();
+  if (n === 3) startGame3();
+  if (n === 4) startGame4();
+  if (n === 5) startGame5();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function geno(text) {
+  return text.replace(/I\^([A-Z])/g, "I<sup>$1</sup>");
+}
+function getGameState(n) {
+  if (n === 1) return game1State;
+  if (n === 2) return game2State;
+  if (n === 3) return game3State;
+  if (n === 4) return game4State;
+  if (n === 5) return game5State;
+}
+
+function answerGeneric(gameNum, chosen, q, btnEl) {
+  const buttons = document.querySelectorAll(`#game${gameNum}-options .option-btn`);
+  buttons.forEach(b => b.disabled = true);
+  const fb = document.getElementById(`game${gameNum}-feedback`);
+  const state = getGameState(gameNum);
+  const correctNorm = q.correct.replace(/<[^>]+>/g, '');
+  const chosenNorm = chosen.replace(/<[^>]+>/g, '');
+  const isCorrect = chosenNorm === correctNorm;
+
+  // Guardar respuesta en el historial
+  if (!state.history) state.history = [];
+  state.history.push({
+    question: q,
+    chosen: chosen,
+    isCorrect: isCorrect,
+    questionNumber: state.round + 1
+  });
+
+  if (isCorrect) {
+    btnEl.classList.add('correct');
+    state.score++;
+    fb.classList.add('success', 'show');
+    fb.innerHTML = `<strong>✓ Correcto.</strong><div class="explanation">${geno(q.explanation)}</div>`;
+  } else {
+    btnEl.classList.add('wrong');
+    buttons.forEach(b => {
+      const bNorm = b.textContent.replace(/\s+/g, ' ').trim();
+      const cNorm = correctNorm.replace(/\s+/g, ' ').trim();
+      if (bNorm === cNorm) b.classList.add('correct');
+    });
+    fb.classList.add('error', 'show');
+    fb.innerHTML = `<strong>La respuesta correcta era: ${geno(q.correct)}.</strong><div class="explanation">${geno(q.explanation)}</div>`;
+  }
+  document.getElementById(`score${gameNum}`).textContent = state.score;
+  setTimeout(() => {
+    state.round++;
+    if (gameNum === 1) showGame1Question();
+    if (gameNum === 2) showGame2Question();
+    if (gameNum === 3) showGame3Question();
+    if (gameNum === 4) showGame4Question();
+    if (gameNum === 5) showGame5Question();
+  }, 3800);
+}
+
+function showEndScreen(gameNum) {
+  const state = getGameState(gameNum);
+  document.getElementById(`game${gameNum}-content`).style.display = 'none';
+  document.getElementById(`round${gameNum}`).textContent = state.questions.length;
+  const end = document.getElementById(`game${gameNum}-end`);
+  end.style.display = 'block';
+
+  const score = state.score;
+  const total = state.questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  // Calcular tiempo transcurrido
+  const elapsedMs = Date.now() - (state.startTime || Date.now());
+  const elapsedSec = Math.round(elapsedMs / 1000);
+  const minutes = Math.floor(elapsedSec / 60);
+  const seconds = elapsedSec % 60;
+  const timeStr = minutes > 0
+    ? `${minutes} min ${seconds} s`
+    : `${seconds} segundos`;
+  const avgPerQuestion = Math.round(elapsedSec / total);
+
+  let emoji, msg, sub;
+  if (pct === 100) { emoji = '🏆'; msg = '¡Excelente!'; sub = 'Dominas el tema completamente.'; }
+  else if (pct >= 80) { emoji = '🌟'; msg = '¡Muy buen trabajo!'; sub = 'Tienes un sólido manejo del contenido.'; }
+  else if (pct >= 60) { emoji = '📘'; msg = '¡Buen esfuerzo!'; sub = 'Vas por buen camino. Repasa los conceptos clave.'; }
+  else { emoji = '💪'; msg = '¡Sigue practicando!'; sub = 'Repasa la guía didáctica y vuelve a intentarlo.'; }
+
+  // ===== ANÁLISIS POR TEMA =====
+  const topicStats = {}; // { topic: { correct: N, total: N } }
+  state.history.forEach(h => {
+    const t = h.question.topic || 'General';
+    if (!topicStats[t]) topicStats[t] = { correct: 0, total: 0 };
+    topicStats[t].total++;
+    if (h.isCorrect) topicStats[t].correct++;
+  });
+
+  // Ordenar topics: primero los más débiles, luego los más fuertes
+  const topicArr = Object.entries(topicStats).map(([name, s]) => ({
+    name, ...s, pct: Math.round((s.correct / s.total) * 100)
+  })).sort((a, b) => a.pct - b.pct);
+
+  // Identificar fortalezas y debilidades
+  const strengths = topicArr.filter(t => t.pct >= 75);
+  const weaknesses = topicArr.filter(t => t.pct < 60);
+
+  // ===== HTML del análisis =====
+  let topicAnalysisHTML = '';
+  topicArr.forEach(t => {
+    let barClass = 'bar-strong';
+    if (t.pct < 60) barClass = 'bar-weak';
+    else if (t.pct < 80) barClass = 'bar-medium';
+    topicAnalysisHTML += `
+      <div class="topic-analysis">
+        <div class="topic-name">${t.name}</div>
+        <div class="topic-bar-wrap">
+          <div class="topic-bar ${barClass}" style="width: ${t.pct}%"></div>
+        </div>
+        <div class="topic-stat">${t.correct}/${t.total} · ${t.pct}%</div>
+      </div>`;
+  });
+
+  // ===== Recomendaciones =====
+  let strengthsHTML = '';
+  if (strengths.length > 0) {
+    strengthsHTML = `
+      <div class="summary-box strengths">
+        <h5>Fortalezas detectadas</h5>
+        <ul>
+          ${strengths.map(t => `<li><strong>${t.name}</strong> (${t.pct}% de aciertos): dominas bien este tipo de problema.</li>`).join('')}
+        </ul>
+      </div>`;
+  }
+
+  let weaknessesHTML = '';
+  if (weaknesses.length > 0) {
+    weaknessesHTML = `
+      <div class="summary-box weaknesses">
+        <h5>Áreas para reforzar</h5>
+        <ul>
+          ${weaknesses.map(t => `<li><strong>${t.name}</strong> (${t.pct}% de aciertos): conviene repasar este concepto en la guía didáctica.</li>`).join('')}
+        </ul>
+      </div>`;
+  }
+
+  // Si no hay debilidades claras pero la nota no es perfecta, mensaje genérico
+  if (weaknesses.length === 0 && pct < 100) {
+    weaknessesHTML = `
+      <div class="summary-box weaknesses" style="border-left-color: var(--primary-light);">
+        <h5>Para llegar al 100%</h5>
+        <ul>
+          <li>Tu desempeño es parejo en todos los temas. Revisa abajo las preguntas que fallaste para identificar detalles puntuales que mejorar.</li>
+        </ul>
+      </div>`;
+  }
+
+  // ===== Revisión pregunta por pregunta =====
+  let reviewHTML = '<div class="review-items" id="review-items-' + gameNum + '">';
+  state.history.forEach((h, idx) => {
+    const q = h.question;
+    const cls = h.isCorrect ? 'correct' : 'wrong';
+    const statusCls = h.isCorrect ? 'ok' : 'no';
+    const statusTxt = h.isCorrect ? '✓ Correcta' : '✗ Incorrecta';
+
+    // Generar resumen del cruce/escenario según tipo de juego
+    let scenarioStr = '';
+    if (gameNum === 1) {
+      scenarioStr = `Cruce ${q.p1.geno} × ${q.p2.geno} → ${q.f}`;
+    } else if (gameNum === 2) {
+      scenarioStr = `${q.p1} × ${q.p2}: ${q.text}`;
+    } else if (gameNum === 3) {
+      scenarioStr = `${q.cross}: ${q.text}`;
+    } else if (gameNum === 4) {
+      scenarioStr = `${q.p1.group} (${geno(q.p1.geno)}) × ${q.p2.group} (${geno(q.p2.geno)}): ${q.text}`;
+    } else if (gameNum === 5) {
+      scenarioStr = q.question;
+    }
+
+    const yourAnsClass = h.isCorrect ? 'correct-text' : 'wrong-text';
+
+    reviewHTML += `
+      <div class="review-item ${cls}">
+        <div class="ri-header">
+          <span class="ri-num">Pregunta ${idx + 1}</span>
+          <span class="ri-status ${statusCls}">${statusTxt}</span>
+        </div>
+        <div class="ri-topic">${q.topic || 'General'}</div>
+        <div class="ri-q">${geno(scenarioStr)}</div>
+        <div class="ri-answers">
+          <div><span class="label">Tu respuesta:</span> <span class="your-ans ${yourAnsClass}">${geno(h.chosen)}</span></div>
+          ${!h.isCorrect ? `<div><span class="label">Correcta:</span> <span class="correct-ans">${geno(q.correct)}</span></div>` : ''}
+        </div>
+        <div class="ri-explanation">${geno(q.explanation)}</div>
+      </div>`;
+  });
+  reviewHTML += '</div>';
+
+  // ===== HTML completo =====
+  end.innerHTML = `
+    <div class="celebration">
+      <div class="emoji">${emoji}</div>
+      <h3>${msg}</h3>
+      <div class="stat">Acertaste <strong>${score}</strong> de <strong>${total}</strong></div>
+      <div class="metrics-row">
+        <div class="metric">
+          <div class="metric-label">Aciertos</div>
+          <div class="metric-value">${pct}%</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Tiempo</div>
+          <div class="metric-value">${timeStr}</div>
+          <div class="metric-sub">~${avgPerQuestion}s por pregunta</div>
+        </div>
+      </div>
+      <div class="stat">${sub}</div>
+    </div>
+
+    <div class="feedback-section">
+      <h4>Análisis por tema</h4>
+      <p class="section-intro">Este análisis muestra tu desempeño agrupado por concepto. Las barras verdes indican dominio (≥80%), las amarillas indican comprensión parcial (60-79%) y las rojas indican que conviene repasar (&lt;60%).</p>
+      ${topicAnalysisHTML}
+
+      ${strengthsHTML}
+      ${weaknessesHTML}
+    </div>
+
+    <div class="feedback-section">
+      <h4>Revisión de las respuestas</h4>
+      <p class="section-intro">Revisa cada pregunta con su explicación detallada para reforzar lo aprendido.</p>
+      <button class="review-toggle" id="review-toggle-${gameNum}" onclick="toggleReview(${gameNum})">
+        Ver las ${total} preguntas en detalle <span class="arrow">▼</span>
+      </button>
+      ${reviewHTML}
+    </div>
+
+    <div style="text-align:center; margin-top:32px;">
+      <button class="next-btn" onclick="showGame(${gameNum})">Intentar de nuevo</button>
+      <button class="btn-back" onclick="showMenu()" style="margin: 14px auto 0; display:block;">Volver al menú</button>
+    </div>`;
+}
+
+function toggleReview(gameNum) {
+  const items = document.getElementById('review-items-' + gameNum);
+  const btn = document.getElementById('review-toggle-' + gameNum);
+  items.classList.toggle('open');
+  btn.classList.toggle('open');
+  if (items.classList.contains('open')) {
+    btn.innerHTML = btn.innerHTML.replace('Ver las', 'Ocultar las');
+  } else {
+    btn.innerHTML = btn.innerHTML.replace('Ocultar las', 'Ver las');
+  }
+}
+
+const game1Questions = [
+  {
+    p1: { geno: "AA", pheno: "amarillo puro" },
+    p2: { geno: "aa", pheno: "verde puro" },
+    f: "Toda la F1 = Aa (100% amarillos)",
+    correct: "Primera ley",
+    topic: "1ª Ley (Uniformidad)",
+    explanation: "Cruce de razas puras: la F1 es uniforme. Es la ley de la uniformidad."
+  },
+  {
+    p1: { geno: "Aa", pheno: "amarillo heterocigoto" },
+    p2: { geno: "Aa", pheno: "amarillo heterocigoto" },
+    f: "F2: 1 AA : 2 Aa : 1 aa  (proporción fenotípica 3 amarillos : 1 verde)",
+    correct: "Segunda ley",
+    topic: "2ª Ley (Segregación)",
+    explanation: "Cruce de heterocigotos en F1: los alelos se segregan y aparece la proporción 3:1 característica de la 2ª ley."
+  },
+  {
+    p1: { geno: "AaBb", pheno: "amarillo y liso" },
+    p2: { geno: "AaBb", pheno: "amarillo y liso" },
+    f: "F2: 9 amarillos lisos : 3 amarillos rugosos : 3 verdes lisos : 1 verde rugoso",
+    correct: "Tercera ley",
+    topic: "3ª Ley (Independencia)",
+    explanation: "Cruce dihíbrido con dos caracteres independientes: la proporción 9:3:3:1 evidencia la distribución independiente."
+  },
+  {
+    p1: { geno: "VV", pheno: "violeta pura" },
+    p2: { geno: "vv", pheno: "blanca pura" },
+    f: "F1: todas Vv (100% violetas)",
+    correct: "Primera ley",
+    topic: "1ª Ley (Uniformidad)",
+    explanation: "Toda la F1 expresa el carácter dominante: uniformidad fenotípica."
+  },
+  {
+    p1: { geno: "Tt", pheno: "alta heterocigota" },
+    p2: { geno: "Tt", pheno: "alta heterocigota" },
+    f: "F2: 75% altas, 25% bajas",
+    correct: "Segunda ley",
+    topic: "2ª Ley (Segregación)",
+    explanation: "Proporción 3:1 en la F2, característica de la segregación de alelos."
+  },
+  {
+    p1: { geno: "RrYy", pheno: "redonda y amarilla" },
+    p2: { geno: "RrYy", pheno: "redonda y amarilla" },
+    f: "F2: 9 R-Y- : 3 R-yy : 3 rrY- : 1 rryy",
+    correct: "Tercera ley",
+    topic: "3ª Ley (Independencia)",
+    explanation: "Cruce dihíbrido con proporción 9:3:3:1: los caracteres se transmiten de forma independiente."
+  },
+  {
+    p1: { geno: "BB", pheno: "negro puro" },
+    p2: { geno: "bb", pheno: "blanco puro" },
+    f: "F1: 100% Bb (todos negros)",
+    correct: "Primera ley",
+    topic: "1ª Ley (Uniformidad)",
+    explanation: "Cruce de razas puras: F1 uniforme con fenotipo dominante."
+  },
+  {
+    p1: { geno: "LLcc", pheno: "lisa y cortas" },
+    p2: { geno: "llCC", pheno: "rugosa y largas" },
+    f: "F1: 100% LlCc (uniformes)",
+    correct: "Primera ley",
+    topic: "1ª Ley (Uniformidad)",
+    explanation: "Cruce de razas puras dihíbrido: la F1 es uniforme. Es válido aunque consideremos dos caracteres a la vez."
+  },
+  {
+    p1: { geno: "Pp", pheno: "alta heterocigota" },
+    p2: { geno: "pp", pheno: "baja pura" },
+    f: "Descendencia: 50% Pp (altas) : 50% pp (bajas)",
+    correct: "Segunda ley",
+    topic: "2ª Ley (Segregación)",
+    explanation: "Cruce prueba o retrocruzamiento. La proporción 1:1 evidencia la segregación de los alelos del progenitor heterocigoto."
+  },
+  {
+    p1: { geno: "MmNn", pheno: "ambos caracteres dominantes" },
+    p2: { geno: "MmNn", pheno: "ambos caracteres dominantes" },
+    f: "F2 fenotípica: 9 : 3 : 3 : 1",
+    correct: "Tercera ley",
+    topic: "3ª Ley (Independencia)",
+    explanation: "Cruce dihíbrido entre heterocigotos. La proporción 9:3:3:1 es la firma de la independencia entre los dos caracteres."
+  },
+  {
+    p1: { geno: "DD", pheno: "homocigoto dominante" },
+    p2: { geno: "dd", pheno: "homocigoto recesivo" },
+    f: "100% Dd (todos expresan el carácter dominante)",
+    correct: "Primera ley",
+    topic: "1ª Ley (Uniformidad)",
+    explanation: "Cruce monohíbrido entre razas puras: F1 uniforme con el fenotipo dominante."
+  },
+  {
+    p1: { geno: "Ee", pheno: "heterocigoto" },
+    p2: { geno: "Ee", pheno: "heterocigoto" },
+    f: "Genotipos: 25% EE, 50% Ee, 25% ee",
+    correct: "Segunda ley",
+    topic: "2ª Ley (Segregación)",
+    explanation: "Proporción genotípica 1:2:1 al cruzar dos heterocigotos: los alelos se segregan en la formación de gametos."
+  }
+];
+let game1State = { round: 0, score: 0, questions: [] };
+function startGame1() {
+  game1State = { round: 0, score: 0, history: [], startTime: Date.now(), questions: shuffle(game1Questions).slice(0, 10) };
+  document.getElementById('total1').textContent = 10;
+  document.getElementById('game1-end').style.display = 'none';
+  document.getElementById('game1-content').style.display = 'block';
+  showGame1Question();
+}
+function showGame1Question() {
+  document.getElementById('score1').textContent = game1State.score;
+  document.getElementById('round1').textContent = game1State.round + 1;
+  if (game1State.round >= game1State.questions.length) { showEndScreen(1); return; }
+  const q = game1State.questions[game1State.round];
+  const html = `
+    <div class="scene">
+      <div class="scene-title">Estudia el siguiente cruce</div>
+      <div class="law-cross">
+        <div class="parent-card"><span class="geno">${q.p1.geno}</span><span class="pheno">${q.p1.pheno}</span></div>
+        <span class="cross-symbol">×</span>
+        <div class="parent-card"><span class="geno">${q.p2.geno}</span><span class="pheno">${q.p2.pheno}</span></div>
+      </div>
+      <div class="outcome">Descendencia: <strong>${q.f}</strong></div>
+    </div>
+    <div class="options-grid cols-3" id="game1-options"></div>
+    <div class="feedback" id="game1-feedback"></div>`;
+  document.getElementById('game1-content').innerHTML = html;
+  const opts = ["Primera ley", "Segunda ley", "Tercera ley"];
+  const optionsDiv = document.getElementById('game1-options');
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answerGeneric(1, opt, q, btn);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+const game2Questions = [
+  { p1: "AA", p2: "aa",
+    text: "Cruce de razas puras AA × aa. ¿Cuál es la proporción fenotípica de la F1, sabiendo que A es dominante sobre a?",
+    options: ["100% dominante", "75% dominante : 25% recesivo", "50% : 50%", "100% recesivo"],
+    correct: "100% dominante",
+    topic: "Proporción fenotípica",
+    explanation: "Toda la F1 es Aa. Como A es dominante, el 100% expresa el fenotipo dominante (1ª ley)." },
+  { p1: "Aa", p2: "Aa",
+    text: "Cruce Aa × Aa. ¿Cuál es la proporción fenotípica esperada en la F2?",
+    options: ["100% dominante", "3 dominantes : 1 recesivo", "1 : 2 : 1", "1 dominante : 1 recesivo"],
+    correct: "3 dominantes : 1 recesivo",
+    topic: "Proporción fenotípica",
+    explanation: "Aa × Aa → 1 AA : 2 Aa : 1 aa. Fenotípicamente, 3 expresan el dominante y 1 el recesivo (2ª ley)." },
+  { p1: "Aa", p2: "Aa",
+    text: "Cruce Aa × Aa. ¿Cuál es la proporción genotípica esperada?",
+    options: ["3 : 1", "1 : 2 : 1", "1 : 1", "9 : 3 : 3 : 1"],
+    correct: "1 : 2 : 1",
+    topic: "Proporción genotípica",
+    explanation: "1 AA : 2 Aa : 1 aa, es decir 25% homocigotos dominantes, 50% heterocigotos, 25% homocigotos recesivos." },
+  { p1: "Aa", p2: "aa",
+    text: "Cruce prueba: Aa × aa. ¿Qué proporción se espera?",
+    options: ["100% Aa", "3 : 1", "1 Aa : 1 aa", "1 AA : 1 aa"],
+    correct: "1 Aa : 1 aa",
+    topic: "Cruce prueba",
+    explanation: "El cruce de un heterocigoto con un homocigoto recesivo da 50% Aa y 50% aa (proporción 1:1). Es el cruce prueba o retrocruzamiento." },
+  { p1: "AA", p2: "Aa",
+    text: "Cruce AA × Aa. ¿Cuál es la proporción genotípica esperada?",
+    options: ["100% AA", "1 AA : 1 Aa", "3 AA : 1 Aa", "1 : 2 : 1"],
+    correct: "1 AA : 1 Aa",
+    topic: "Proporción genotípica",
+    explanation: "AA solo aporta A; Aa aporta A o a. Resultados: 50% AA y 50% Aa. Fenotípicamente todos dominantes." },
+  { p1: "Aa", p2: "Aa",
+    text: "De 200 descendientes en un cruce Aa × Aa, ¿cuántos se espera que sean homocigotos recesivos?",
+    options: ["50", "100", "150", "25"],
+    correct: "50",
+    topic: "Cálculo numérico",
+    explanation: "La proporción de aa es 1/4 = 25%. En 200 descendientes: 200 × 1/4 = 50." },
+  { p1: "BB", p2: "Bb",
+    text: "Cruce BB × Bb. ¿Cuál es la proporción fenotípica?",
+    options: ["100% dominante", "3 : 1", "1 : 1", "1 : 2 : 1"],
+    correct: "100% dominante",
+    topic: "Proporción fenotípica",
+    explanation: "BB aporta solo B; Bb aporta B o b. Resultados: 50% BB y 50% Bb. En ambos casos el fenotipo es dominante." },
+  { p1: "Aa", p2: "Aa",
+    text: "En un cruce Aa × Aa, ¿cuál es la probabilidad de obtener un descendiente heterocigoto?",
+    options: ["25%", "50%", "75%", "100%"],
+    correct: "50%",
+    topic: "Probabilidad simple",
+    explanation: "Cuadro de Punnett: AA, Aa, aA, aa. Los heterocigotos son 2 de 4 = 50%." },
+  { p1: "Tt", p2: "tt",
+    text: "Una planta alta heterocigota (Tt) se cruza con una baja (tt). De 80 descendientes, ¿cuántos se espera que sean bajos?",
+    options: ["20", "40", "60", "80"],
+    correct: "40",
+    topic: "Cálculo numérico",
+    explanation: "Tt × tt = 50% Tt (altas) + 50% tt (bajas). De 80 descendientes: 80 × 1/2 = 40 bajos." },
+  { p1: "Aa", p2: "Aa",
+    text: "Si A es dominante y a es recesivo, ¿qué porcentaje de los descendientes en un cruce Aa × Aa será homocigoto (cualquier tipo)?",
+    options: ["25%", "50%", "75%", "100%"],
+    correct: "50%",
+    topic: "Probabilidad simple",
+    explanation: "En la F2 hay 1 AA : 2 Aa : 1 aa. Los homocigotos (AA + aa) son 2 de 4 = 50%. Los heterocigotos (Aa) también son el 50%." },
+  { p1: "Cc", p2: "Cc",
+    text: "En guisantes, semilla amarilla (C) es dominante sobre verde (c). Si dos heterocigotos se cruzan, ¿qué probabilidad hay de obtener una semilla verde?",
+    options: ["0%", "25%", "50%", "75%"],
+    correct: "25%",
+    topic: "Probabilidad simple",
+    explanation: "Cc × Cc → 1 CC : 2 Cc : 1 cc. La probabilidad de cc (verde) es 1/4 = 25%." },
+  { p1: "Rr", p2: "rr",
+    text: "Cruce prueba Rr × rr. ¿Qué proporción fenotípica se espera?",
+    options: ["3 : 1", "1 : 1", "100% dominante", "1 : 2 : 1"],
+    correct: "1 : 1",
+    topic: "Cruce prueba",
+    explanation: "El cruce prueba revela si un individuo es heterocigoto. La proporción 1:1 entre Rr y rr confirma la heterocigosis." }
+];
+let game2State = { round: 0, score: 0, questions: [] };
+function startGame2() {
+  game2State = { round: 0, score: 0, history: [], startTime: Date.now(), questions: shuffle(game2Questions).slice(0, 10) };
+  document.getElementById('total2').textContent = 10;
+  document.getElementById('game2-end').style.display = 'none';
+  document.getElementById('game2-content').style.display = 'block';
+  showGame2Question();
+}
+function showGame2Question() {
+  document.getElementById('score2').textContent = game2State.score;
+  document.getElementById('round2').textContent = game2State.round + 1;
+  if (game2State.round >= game2State.questions.length) { showEndScreen(2); return; }
+  const q = game2State.questions[game2State.round];
+  const html = `
+    <div class="scene">
+      <div class="law-cross">
+        <div class="parent-card"><span class="geno">${q.p1}</span><span class="pheno">progenitor 1</span></div>
+        <span class="cross-symbol">×</span>
+        <div class="parent-card"><span class="geno">${q.p2}</span><span class="pheno">progenitor 2</span></div>
+      </div>
+      <div class="outcome" style="font-size:0.96rem;">${q.text}</div>
+    </div>
+    <div class="options-grid" id="game2-options"></div>
+    <div class="feedback" id="game2-feedback"></div>`;
+  document.getElementById('game2-content').innerHTML = html;
+  const optionsDiv = document.getElementById('game2-options');
+  shuffle(q.options).forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answerGeneric(2, opt, q, btn);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+const game3Questions = [
+  { cross: "AaBb × AaBb", note: "A = amarillo (dom), a = verde · B = liso (dom), b = rugoso",
+    text: "¿Cuál es la proporción fenotípica de la F2?",
+    options: ["9 : 3 : 3 : 1", "3 : 1", "1 : 2 : 1", "1 : 1 : 1 : 1"],
+    correct: "9 : 3 : 3 : 1",
+    topic: "Proporción 9:3:3:1",
+    explanation: "Cruce dihíbrido entre heterocigotos: la proporción 9:3:3:1 es la firma característica de la 3ª ley de Mendel." },
+  { cross: "AaBb × AaBb", note: "A = negro (dom), a = blanco · B = corto (dom), b = largo",
+    text: "¿Cuál es la probabilidad de obtener un descendiente NEGRO Y CORTO?",
+    options: ["1/16", "3/16", "9/16", "1/4"],
+    correct: "9/16",
+    topic: "Regla del producto",
+    explanation: "Aplicando la regla del producto: P(negro) × P(corto) = 3/4 × 3/4 = 9/16." },
+  { cross: "AaBb × AaBb", note: "A = dominante, a = recesivo · B = dominante, b = recesivo",
+    text: "¿Cuál es la probabilidad de un descendiente con AMBOS caracteres recesivos (aabb)?",
+    options: ["1/4", "3/16", "1/16", "1/2"],
+    correct: "1/16",
+    topic: "Regla del producto",
+    explanation: "P(aa) × P(bb) = 1/4 × 1/4 = 1/16. Es la combinación menos frecuente del cruce dihíbrido." },
+  { cross: "AaBb × aabb", note: "Cruce prueba dihíbrido",
+    text: "¿Cuál es la proporción fenotípica esperada?",
+    options: ["9 : 3 : 3 : 1", "1 : 1 : 1 : 1", "3 : 1", "1 : 2 : 1"],
+    correct: "1 : 1 : 1 : 1",
+    topic: "Cruce prueba dihíbrido",
+    explanation: "El cruce prueba (con homocigoto recesivo) revela los gametos del heterocigoto. AaBb produce 4 tipos de gametos en igual proporción → 1:1:1:1." },
+  { cross: "AaBb × AaBb", note: "F2 con 320 descendientes totales",
+    text: "Aproximadamente, ¿cuántos descendientes tendrán ambos caracteres dominantes?",
+    options: ["180", "60", "20", "240"],
+    correct: "180",
+    topic: "Cálculo numérico",
+    explanation: "320 × 9/16 = 180. La fracción 9/16 corresponde a los individuos con ambos caracteres dominantes." },
+  { cross: "AABb × AaBb", note: "A = dominante, a = recesivo · B = dominante, b = recesivo",
+    text: "¿Cuál es la probabilidad de un descendiente aabb?",
+    options: ["1/16", "1/4", "0 (imposible)", "1/8"],
+    correct: "0 (imposible)",
+    topic: "Casos especiales",
+    explanation: "El primer progenitor es AA, no puede aportar el alelo a. Es imposible obtener aa, así que aabb tampoco es posible." },
+  { cross: "AaBb × AaBb", note: "Cruce dihíbrido entre heterocigotos",
+    text: "¿Cuántos tipos de gametos diferentes puede producir cada progenitor?",
+    options: ["2 tipos", "4 tipos", "8 tipos", "16 tipos"],
+    correct: "4 tipos",
+    topic: "Tipos de gametos",
+    explanation: "Un individuo AaBb produce 4 tipos de gametos: AB, Ab, aB, ab. Es por eso que el cuadro de Punnett dihíbrido es 4×4 = 16 casillas." },
+  { cross: "AaBb × AaBb", note: "A = dominante, a = recesivo · B = dominante, b = recesivo",
+    text: "¿Cuál es la probabilidad de un descendiente con primer carácter dominante y segundo recesivo (A-bb)?",
+    options: ["1/16", "3/16", "9/16", "1/4"],
+    correct: "3/16",
+    topic: "Regla del producto",
+    explanation: "P(A-) × P(bb) = 3/4 × 1/4 = 3/16. Corresponde a uno de los dos grupos 'medianos' de la proporción 9:3:3:1." },
+  { cross: "AaBB × AaBb", note: "A = dominante, a = recesivo · B = dominante, b = recesivo",
+    text: "¿Qué proporción fenotípica se espera en la descendencia?",
+    options: ["9 : 3 : 3 : 1", "3 : 1", "1 : 1", "Todos dominantes para B; 3:1 para A"],
+    correct: "Todos dominantes para B; 3:1 para A",
+    topic: "Casos especiales",
+    explanation: "Para B: BB × Bb → todos serán B-. Para A: Aa × Aa → 3:1. Como B es uniforme, no hay 9:3:3:1." },
+  { cross: "AABB × aabb", note: "Cruce de razas puras dihíbrido",
+    text: "¿Cuál será la F1?",
+    options: ["100% AaBb (uniformes)", "9 : 3 : 3 : 1", "1 : 1 : 1 : 1", "3 : 1"],
+    correct: "100% AaBb (uniformes)",
+    topic: "F1 dihíbrida",
+    explanation: "Cruce de razas puras: la F1 es uniforme con genotipo AaBb (1ª ley aplicada a dos caracteres simultáneos)." },
+  { cross: "AaBb × AaBb", note: "F2 con 160 descendientes",
+    text: "¿Cuántos descendientes se esperan con genotipo doble recesivo (aabb)?",
+    options: ["10", "30", "90", "5"],
+    correct: "10",
+    topic: "Cálculo numérico",
+    explanation: "P(aabb) = 1/16. En 160 descendientes: 160 × 1/16 = 10." },
+  { cross: "AaBb × Aabb", note: "Cruce mixto",
+    text: "¿Cuál es la probabilidad de obtener un descendiente con genotipo aabb?",
+    options: ["1/16", "1/8", "1/4", "1/2"],
+    correct: "1/8",
+    topic: "Regla del producto",
+    explanation: "P(aa) × P(bb) = 1/4 × 1/2 = 1/8. El primer progenitor (Bb) da 1/2 b; el segundo (bb) da 1 b. P(bb hijo) = 1/2 × 1 = 1/2." }
+];
+let game3State = { round: 0, score: 0, questions: [] };
+function startGame3() {
+  game3State = { round: 0, score: 0, history: [], startTime: Date.now(), questions: shuffle(game3Questions).slice(0, 10) };
+  document.getElementById('total3').textContent = 10;
+  document.getElementById('game3-end').style.display = 'none';
+  document.getElementById('game3-content').style.display = 'block';
+  showGame3Question();
+}
+function showGame3Question() {
+  document.getElementById('score3').textContent = game3State.score;
+  document.getElementById('round3').textContent = game3State.round + 1;
+  if (game3State.round >= game3State.questions.length) { showEndScreen(3); return; }
+  const q = game3State.questions[game3State.round];
+  const html = `
+    <div class="scene">
+      <div class="dihibrid-info">${q.note}</div>
+      <div class="dihibrid-cross">
+        <div style="text-align:center; font-family:var(--serif); font-size:1.6rem; font-weight:700; color:var(--primary);">${q.cross}</div>
+      </div>
+      <div class="outcome" style="font-size:0.98rem;">${q.text}</div>
+    </div>
+    <div class="options-grid cols-4" id="game3-options"></div>
+    <div class="feedback" id="game3-feedback"></div>`;
+  document.getElementById('game3-content').innerHTML = html;
+  const optionsDiv = document.getElementById('game3-options');
+  shuffle(q.options).forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answerGeneric(3, opt, q, btn);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+const game4Questions = [
+  { p1: { group: "A", geno: "I^A i" }, p2: { group: "B", geno: "I^B i" },
+    text: "Probabilidad de que un hijo sea de grupo AB:",
+    options: ["25%", "50%", "75%", "0%"],
+    correct: "25%",
+    topic: "Cruce A × B (heterocigotos)",
+    explanation: "Cuadro de Punnett: I^AI^B (AB), I^Ai (A), I^Bi (B), ii (O). Cada uno tiene probabilidad 1/4 = 25%." },
+  { p1: { group: "AB", geno: "I^A I^B" }, p2: { group: "O", geno: "i i" },
+    text: "Probabilidad de que un hijo sea de grupo O:",
+    options: ["50%", "0%", "25%", "100%"],
+    correct: "0%",
+    topic: "Cruces con AB",
+    explanation: "La madre AB nunca aporta i. Por tanto los hijos solo pueden ser I^Ai (grupo A) o I^Bi (grupo B). El grupo O es imposible." },
+  { p1: { group: "A", geno: "I^A I^A" }, p2: { group: "O", geno: "i i" },
+    text: "¿Qué grupo sanguíneo tendrán los hijos?",
+    options: ["50% A, 50% O", "100% A", "100% AB", "25% A, 75% O"],
+    correct: "100% A",
+    topic: "Cruces con homocigotos",
+    explanation: "I^AI^A solo aporta I^A; ii solo aporta i. Todos los hijos serán I^Ai → 100% grupo A." },
+  { p1: { group: "A", geno: "I^A i" }, p2: { group: "A", geno: "I^A i" },
+    text: "Probabilidad de que un hijo sea de grupo O:",
+    options: ["0%", "25%", "50%", "75%"],
+    correct: "25%",
+    topic: "Cruces A × A o B × B",
+    explanation: "Cuadro: 1 I^AI^A : 2 I^Ai : 1 ii. La probabilidad de ii (grupo O) es 1/4 = 25%." },
+  { p1: { group: "AB", geno: "I^A I^B" }, p2: { group: "AB", geno: "I^A I^B" },
+    text: "¿Cuál es la proporción esperada de los grupos sanguíneos en la descendencia?",
+    options: ["1 A : 2 AB : 1 B", "100% AB", "1 A : 1 B : 1 AB : 1 O", "9 AB : 3 A : 3 B : 1 O"],
+    correct: "1 A : 2 AB : 1 B",
+    topic: "Cruces con AB",
+    explanation: "Cuadro: I^AI^A (A), I^AI^B (AB), I^BI^A (AB), I^BI^B (B). Proporción: 1 A : 2 AB : 1 B. NUNCA aparece grupo O en este cruce." },
+  { p1: { group: "A", geno: "I^A i" }, p2: { group: "O", geno: "i i" },
+    text: "Probabilidad de que un hijo sea de grupo A:",
+    options: ["50%", "100%", "25%", "75%"],
+    correct: "50%",
+    topic: "Cruces A × O o B × O",
+    explanation: "Cuadro: I^Ai (A), I^Ai (A), ii (O), ii (O). Probabilidad de A = 2/4 = 50%." },
+  { p1: { group: "B", geno: "I^B i" }, p2: { group: "B", geno: "I^B i" },
+    text: "Si la pareja tiene 4 hijos, ¿cuántos se espera que sean de grupo O?",
+    options: ["1", "2", "0", "3"],
+    correct: "1",
+    topic: "Cruces A × A o B × B",
+    explanation: "I^Bi × I^Bi → 1 I^BI^B : 2 I^Bi : 1 ii. La probabilidad de O es 1/4. En 4 hijos esperamos 1." },
+  { p1: { group: "AB", geno: "I^A I^B" }, p2: { group: "A", geno: "I^A i" },
+    text: "Probabilidad de que un hijo sea de grupo AB:",
+    options: ["25%", "50%", "75%", "100%"],
+    correct: "25%",
+    topic: "Cruces con AB",
+    explanation: "Madre aporta I^A o I^B (50% c/u); padre aporta I^A o i (50% c/u). Para AB necesitamos I^B + I^A. P = 1/2 × 1/2 = 1/4 = 25%." },
+  { p1: { group: "O", geno: "i i" }, p2: { group: "O", geno: "i i" },
+    text: "¿Qué grupo(s) sanguíneo(s) tendrán los hijos?",
+    options: ["100% O", "50% A, 50% O", "Solo AB", "Cualquier grupo"],
+    correct: "100% O",
+    topic: "Cruces O × O",
+    explanation: "Ambos progenitores son ii (homocigotos recesivos). Solo pueden aportar i. Todos los hijos serán ii → 100% grupo O." },
+  { p1: { group: "A", geno: "I^A i" }, p2: { group: "B", geno: "I^B i" },
+    text: "Probabilidad de que un hijo sea de grupo O:",
+    options: ["0%", "25%", "50%", "75%"],
+    correct: "25%",
+    topic: "Cruce A × B (heterocigotos)",
+    explanation: "Ambos progenitores son heterocigotos con alelo i. P(ii) = 1/2 × 1/2 = 1/4 = 25%. Este cruce es el único que puede dar los 4 grupos sanguíneos." },
+  { p1: { group: "A", geno: "I^A i" }, p2: { group: "AB", geno: "I^A I^B" },
+    text: "¿Es posible que tengan un hijo de grupo O?",
+    options: ["Sí, con probabilidad 25%", "Sí, con probabilidad 50%", "No, es imposible", "Sí, con probabilidad 12,5%"],
+    correct: "No, es imposible",
+    topic: "Cruces con AB",
+    explanation: "El padre (AB) nunca aporta el alelo i, ya que su genotipo es I^AI^B. Sin un alelo i de cada progenitor, el hijo no puede ser ii (grupo O)." },
+  { p1: { group: "AB", geno: "I^A I^B" }, p2: { group: "B", geno: "I^B i" },
+    text: "Probabilidad de que un hijo sea de grupo B:",
+    options: ["25%", "50%", "75%", "100%"],
+    correct: "50%",
+    topic: "Cruces con AB",
+    explanation: "Madre aporta I^A o I^B (50% c/u); padre aporta I^B o i (50% c/u). Grupo B = I^BI^B o I^Bi. P = (1/2 × 1/2) + (1/2 × 1/2) = 2/4 = 50%." },
+  { p1: { group: "B", geno: "I^B I^B" }, p2: { group: "A", geno: "I^A i" },
+    text: "¿Qué grupos sanguíneos pueden tener los hijos?",
+    options: ["Solo AB y B", "Solo A y B", "AB, B, A y O", "Solo AB"],
+    correct: "Solo AB y B",
+    topic: "Cruces con homocigotos",
+    explanation: "Madre aporta solo I^B; padre aporta I^A o i. Hijos: I^AI^B (AB, 50%) o I^Bi (B, 50%). Ni A ni O son posibles." }
+];
+let game4State = { round: 0, score: 0, questions: [] };
+function startGame4() {
+  game4State = { round: 0, score: 0, history: [], startTime: Date.now(), questions: shuffle(game4Questions).slice(0, 10) };
+  document.getElementById('total4').textContent = 10;
+  document.getElementById('game4-end').style.display = 'none';
+  document.getElementById('game4-content').style.display = 'block';
+  showGame4Question();
+}
+function showGame4Question() {
+  document.getElementById('score4').textContent = game4State.score;
+  document.getElementById('round4').textContent = game4State.round + 1;
+  if (game4State.round >= game4State.questions.length) { showEndScreen(4); return; }
+  const q = game4State.questions[game4State.round];
+  const html = `
+    <div class="scene">
+      <div class="parents-row">
+        <div class="parent-blood">
+          <div class="role">Madre</div>
+          <div class="bgroup">${q.p1.group}</div>
+          <div class="geno">${geno(q.p1.geno)}</div>
+        </div>
+        <div class="parent-blood">
+          <div class="role">Padre</div>
+          <div class="bgroup">${q.p2.group}</div>
+          <div class="geno">${geno(q.p2.geno)}</div>
+        </div>
+      </div>
+      <div class="outcome" style="font-size:0.98rem;">${geno(q.text)}</div>
+    </div>
+    <div class="options-grid cols-4" id="game4-options"></div>
+    <div class="feedback" id="game4-feedback"></div>`;
+  document.getElementById('game4-content').innerHTML = html;
+  const optionsDiv = document.getElementById('game4-options');
+  shuffle(q.options).forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = geno(opt);
+    btn.onclick = () => answerGeneric(4, opt, q, btn);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+function buildPedigreeSVG(scenario) {
+  const w = 600, h = 360;
+  let svg = `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">`;
+  svg += `<rect width="${w}" height="${h}" fill="white"/>`;
+
+  svg += `<text x="20" y="80" font-size="13" font-weight="700" fill="#1F4E79">I</text>`;
+  svg += `<text x="20" y="195" font-size="13" font-weight="700" fill="#1F4E79">II</text>`;
+  svg += `<text x="20" y="305" font-size="13" font-weight="700" fill="#1F4E79">III</text>`;
+
+  // Generación I (abuelos)
+  svg += renderIndividual(scenario.gen1[0], 220, 80, "square");
+  svg += `<line x1="252" y1="80" x2="358" y2="80" stroke="#1F4E79" stroke-width="2"/>`;
+  svg += renderIndividual(scenario.gen1[1], 390, 80, "circle");
+
+  // Línea descendencia I→II
+  svg += `<line x1="305" y1="80" x2="305" y2="135" stroke="#1F4E79" stroke-width="2"/>`;
+
+  // Padres (Gen II)
+  const hasUncle = scenario.gen2.length > 2;
+  const ii1x = hasUncle ? 200 : 230;
+  const ii2x = hasUncle ? 320 : 380;
+  const ii3x = hasUncle ? 470 : null;
+
+  svg += `<line x1="${ii1x}" y1="135" x2="${hasUncle ? ii3x : ii2x}" y2="135" stroke="#1F4E79" stroke-width="2"/>`;
+
+  // II-1 (madre, hija de los abuelos)
+  svg += `<line x1="${ii1x}" y1="135" x2="${ii1x}" y2="173" stroke="#1F4E79" stroke-width="2"/>`;
+  svg += renderIndividual(scenario.gen2[0], ii1x, 198, scenario.gen2[0].sex || "circle");
+
+  // matrimonio II
+  svg += `<line x1="${ii1x + 28}" y1="198" x2="${ii2x - 28}" y2="198" stroke="#1F4E79" stroke-width="2"/>`;
+
+  // II-2 (esposo)
+  svg += renderIndividual(scenario.gen2[1], ii2x, 198, scenario.gen2[1].sex || "square");
+
+  // II-3 (tío) opcional
+  if (hasUncle) {
+    svg += `<line x1="${ii3x}" y1="135" x2="${ii3x}" y2="173" stroke="#1F4E79" stroke-width="2"/>`;
+    svg += renderIndividual(scenario.gen2[2], ii3x, 198, scenario.gen2[2].sex || "square");
+  }
+
+  // Descendencia II→III (de los padres)
+  const midParents = (ii1x + ii2x) / 2;
+  svg += `<line x1="${midParents}" y1="198" x2="${midParents}" y2="248" stroke="#1F4E79" stroke-width="2"/>`;
+
+  const childCount = scenario.gen3.length;
+  if (childCount === 1) {
+    svg += `<line x1="${midParents}" y1="248" x2="${midParents}" y2="285" stroke="#1F4E79" stroke-width="2"/>`;
+    svg += renderIndividual(scenario.gen3[0], midParents, 308, scenario.gen3[0].sex || "circle");
+  } else {
+    const spacing = 70;
+    const totalWidth = (childCount - 1) * spacing;
+    const startX = midParents - totalWidth / 2;
+    const xs = scenario.gen3.map((_, i) => startX + i * spacing);
+    svg += `<line x1="${xs[0]}" y1="248" x2="${xs[xs.length - 1]}" y2="248" stroke="#1F4E79" stroke-width="2"/>`;
+    scenario.gen3.forEach((c, i) => {
+      svg += `<line x1="${xs[i]}" y1="248" x2="${xs[i]}" y2="285" stroke="#1F4E79" stroke-width="2"/>`;
+      svg += renderIndividual(c, xs[i], 308, c.sex || "circle");
+    });
+  }
+
+  svg += `</svg>`;
+  return svg;
+}
+
+function renderIndividual(person, x, y, shape) {
+  const groupColors = {
+    'A': '#FFC107', 'B': '#43A047', 'AB': '#7B1FA2', 'O': '#9E9E9E', '?': '#FFFFFF'
+  };
+  const fill = person.unknown ? '#FFFFFF' : groupColors[person.group];
+  const stroke = person.unknown ? '#C62828' : '#1F4E79';
+  const strokeDash = person.unknown ? 'stroke-dasharray="4,3"' : '';
+  const isLightBg = (person.group === 'A' || person.group === '?' || person.group === 'O');
+  const textColor = person.unknown ? '#C62828' : (isLightBg && person.group !== 'O' ? '#1F4E79' : 'white');
+  const labelText = person.unknown ? '?' : person.group;
+  const fontSize = person.unknown ? 22 : (person.group === 'AB' ? 12 : 14);
+
+  let svg = '';
+  if (shape === "square") {
+    svg += `<rect x="${x - 22}" y="${y - 22}" width="44" height="44" fill="${fill}" stroke="${stroke}" stroke-width="2.5" ${strokeDash}/>`;
+  } else {
+    svg += `<circle cx="${x}" cy="${y}" r="22" fill="${fill}" stroke="${stroke}" stroke-width="2.5" ${strokeDash}/>`;
+  }
+  svg += `<text x="${x}" y="${y + 5}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${textColor}">${labelText}</text>`;
+  if (person.geno) {
+    const genoFmt = person.geno.replace(/I\^([A-Z])/g, "I<tspan font-size='8' baseline-shift='super'>$1</tspan>");
+    svg += `<text x="${x}" y="${y + 40}" text-anchor="middle" font-size="11" fill="#5A6478" font-style="italic">${genoFmt}</text>`;
+  }
+  return svg;
+}
+
+const game5Questions = [
+  {
+    scenario: {
+      gen1: [
+        { group: "A", geno: "I^A i" },
+        { group: "O", geno: "i i" }
+      ],
+      gen2: [
+        { group: "A", geno: "I^A i", sex: "circle" },
+        { group: "B", geno: "I^B i", sex: "square" },
+        { group: "O", geno: "i i", sex: "square" }
+      ],
+      gen3: [
+        { group: "AB", geno: "I^A I^B", sex: "circle" },
+        { group: "O", geno: "i i", sex: "square" },
+        { group: "?", unknown: true, sex: "circle" }
+      ]
+    },
+    question: "¿Cuáles son los genotipos posibles para la hija marcada con ?",
+    options: [
+      "Solo I^A I^B (grupo AB)",
+      "I^A i (A), I^B i (B), I^A I^B (AB) o ii (O) — cualquiera",
+      "I^A i o I^B i únicamente",
+      "Solo ii (grupo O)"
+    ],
+    correct: "I^A i (A), I^B i (B), I^A I^B (AB) o ii (O) — cualquiera",
+    topic: "Deducción a partir de hijos",
+    explanation: "El cruce II es I^Ai × I^Bi (sabemos esto porque tienen un hijo de grupo O, lo que confirma que ambos llevan el alelo i). Este cruce produce los 4 genotipos posibles. La hija ? puede ser cualquiera de los cuatro grupos."
+  },
+  {
+    scenario: {
+      gen1: [
+        { group: "AB", geno: "I^A I^B" },
+        { group: "O", geno: "i i" }
+      ],
+      gen2: [
+        { group: "A", geno: "I^A i", sex: "circle" },
+        { group: "A", geno: "?", sex: "square" }
+      ],
+      gen3: [
+        { group: "O", geno: "i i", sex: "square" }
+      ]
+    },
+    question: "El nieto es de grupo O. ¿Qué se puede deducir del genotipo del padre (II-2)?",
+    options: [
+      "Su genotipo es I^A I^A (homocigoto)",
+      "Su genotipo es I^A i (heterocigoto)",
+      "Es imposible que el nieto sea de grupo O",
+      "Su genotipo es ii"
+    ],
+    correct: "Su genotipo es I^A i (heterocigoto)",
+    topic: "Deducción de heterocigosis",
+    explanation: "Para que el nieto sea ii (grupo O), ambos padres deben aportar el alelo i. La madre es I^Ai. El padre, aunque sea de grupo A, debe ser obligatoriamente I^Ai para poder aportar el alelo i."
+  },
+  {
+    scenario: {
+      gen1: [
+        { group: "A", geno: "I^A ?" },
+        { group: "B", geno: "I^B ?" }
+      ],
+      gen2: [
+        { group: "O", geno: "i i", sex: "circle" },
+        { group: "AB", geno: "I^A I^B", sex: "square" }
+      ],
+      gen3: [
+        { group: "?", unknown: true, sex: "square" },
+        { group: "?", unknown: true, sex: "circle" }
+      ]
+    },
+    question: "Sabiendo que la madre (II-1) es de grupo O, ¿cuáles son los grupos posibles de los hijos en III?",
+    options: [
+      "Solo A o B",
+      "Solo AB o O",
+      "Cualquiera de los cuatro",
+      "Solo A"
+    ],
+    correct: "Solo A o B",
+    topic: "Cruces con AB y O",
+    explanation: "Madre ii × Padre I^AI^B → la madre solo aporta i; el padre aporta I^A o I^B. Resultado: I^Ai (grupo A) o I^Bi (grupo B). Ni AB ni O son posibles."
+  },
+  {
+    scenario: {
+      gen1: [
+        { group: "A", geno: "I^A i" },
+        { group: "B", geno: "I^B i" }
+      ],
+      gen2: [
+        { group: "AB", geno: "I^A I^B", sex: "circle" },
+        { group: "O", geno: "i i", sex: "square" }
+      ],
+      gen3: [
+        { group: "A", geno: "I^A i", sex: "square" },
+        { group: "?", unknown: true, sex: "circle" }
+      ]
+    },
+    question: "¿Cuáles son los grupos posibles para la segunda hija (?) ?",
+    options: [
+      "Solo A o B",
+      "Cualquiera de los cuatro",
+      "Solo AB",
+      "Solo A o AB"
+    ],
+    correct: "Solo A o B",
+    topic: "Cruces con AB y O",
+    explanation: "Madre I^AI^B × Padre ii. La madre aporta I^A o I^B; el padre solo aporta i. Resultado: I^Ai (A) o I^Bi (B), cada uno con probabilidad 50%."
+  },
+  {
+    scenario: {
+      gen1: [
+        { group: "O", geno: "i i" },
+        { group: "O", geno: "i i" }
+      ],
+      gen2: [
+        { group: "O", geno: "i i", sex: "circle" },
+        { group: "A", geno: "I^A i", sex: "square" }
+      ],
+      gen3: [
+        { group: "?", unknown: true, sex: "circle" }
+      ]
+    },
+    question: "Considerando todo el árbol, ¿qué grupos puede tener la hija (?)?",
+    options: [
+      "Solo A o O",
+      "Solo O",
+      "Cualquiera de los cuatro",
+      "Solo A"
+    ],
+    correct: "Solo A o O",
+    topic: "Análisis multigeneracional",
+    explanation: "Los abuelos confirman que la madre es ii. El padre I^Ai × madre ii → I^Ai (50%, grupo A) o ii (50%, grupo O)."
+  },
+  {
+    scenario: {
+      gen1: [
+        { group: "AB", geno: "I^A I^B" },
+        { group: "AB", geno: "I^A I^B" }
+      ],
+      gen2: [
+        { group: "B", geno: "I^B I^B", sex: "circle" },
+        { group: "O", geno: "i i", sex: "square" }
+      ],
+      gen3: [
+        { group: "?", unknown: true, sex: "square" },
+        { group: "?", unknown: true, sex: "circle" }
+      ]
+    },
+    question: "¿Qué grupos sanguíneos pueden tener los hijos (?) de esta pareja?",
+    options: [
+      "Solo grupo B",
+      "Solo grupo A o B",
+      "Cualquiera de los cuatro",
+      "Solo AB y O"
+    ],
+    correct: "Solo grupo B",
+    topic: "Cruces con homocigotos",
+    explanation: "La madre I^BI^B solo aporta I^B; el padre ii solo aporta i. Todos los hijos serán I^Bi → 100% grupo B. Nota: que los abuelos sean AB no afecta a los nietos directamente."
+  },
+  {
+    scenario: {
+      gen1: [
+        { group: "A", geno: "I^A i" },
+        { group: "B", geno: "I^B i" }
+      ],
+      gen2: [
+        { group: "AB", geno: "I^A I^B", sex: "circle" },
+        { group: "AB", geno: "I^A I^B", sex: "square" }
+      ],
+      gen3: [
+        { group: "?", unknown: true, sex: "circle" }
+      ]
+    },
+    question: "Los padres son ambos AB (I^A I^B). ¿Qué grupos puede tener la hija (?)?",
+    options: [
+      "Solo A, B o AB",
+      "Cualquiera de los cuatro",
+      "Solo AB",
+      "Solo A o B"
+    ],
+    correct: "Solo A, B o AB",
+    topic: "Cruces AB × AB",
+    explanation: "I^AI^B × I^AI^B → I^AI^A (A), I^AI^B (AB), I^BI^A (AB), I^BI^B (B). Proporción 1:2:1. El grupo O es imposible porque ningún progenitor aporta i."
+  },
+  {
+    scenario: {
+      gen1: [
+        { group: "A", geno: "I^A i" },
+        { group: "A", geno: "I^A i" }
+      ],
+      gen2: [
+        { group: "O", geno: "i i", sex: "square" },
+        { group: "B", geno: "I^B i", sex: "circle" }
+      ],
+      gen3: [
+        { group: "?", unknown: true, sex: "circle" },
+        { group: "O", geno: "i i", sex: "square" }
+      ]
+    },
+    question: "Sabiendo que uno de los hijos es grupo O, ¿qué grupos puede tener la otra hija (?)?",
+    options: [
+      "Solo B u O",
+      "Solo A u O",
+      "Cualquiera de los cuatro",
+      "Solo AB"
+    ],
+    correct: "Solo B u O",
+    topic: "Cruces con homocigotos",
+    explanation: "El padre es ii (grupo O); la madre I^Bi. El padre solo aporta i. La madre aporta I^B (50%) o i (50%). Hijos: I^Bi (grupo B, 50%) o ii (grupo O, 50%)."
+  },
+  {
+    scenario: {
+      gen1: [
+        { group: "B", geno: "I^B i" },
+        { group: "B", geno: "I^B i" }
+      ],
+      gen2: [
+        { group: "B", geno: "I^B ?", sex: "circle" },
+        { group: "A", geno: "I^A i", sex: "square" }
+      ],
+      gen3: [
+        { group: "O", geno: "i i", sex: "square" }
+      ]
+    },
+    question: "El nieto es de grupo O. ¿Qué se puede deducir sobre el genotipo de la madre (II-1)?",
+    options: [
+      "Es I^B I^B (homocigota)",
+      "Es I^B i (heterocigota, lleva el alelo i)",
+      "Es imposible que el nieto sea O",
+      "Es I^A I^B"
+    ],
+    correct: "Es I^B i (heterocigota, lleva el alelo i)",
+    topic: "Deducción de heterocigosis",
+    explanation: "Para que el nieto sea ii (grupo O), ambos padres deben aportar el alelo i. El padre I^Ai sí lo lleva. La madre, aunque sea de grupo B, debe ser obligatoriamente I^Bi para poder aportar el alelo i. Esto es coherente con que ambos abuelos son I^Bi (heterocigotos)."
+  },
+  {
+    scenario: {
+      gen1: [
+        { group: "AB", geno: "I^A I^B" },
+        { group: "A", geno: "I^A I^A" }
+      ],
+      gen2: [
+        { group: "A", geno: "I^A I^A", sex: "square" },
+        { group: "B", geno: "I^B i", sex: "circle" }
+      ],
+      gen3: [
+        { group: "?", unknown: true, sex: "circle" }
+      ]
+    },
+    question: "¿Qué grupos sanguíneos puede tener la hija (?)?",
+    options: [
+      "Solo AB",
+      "Solo AB o A",
+      "Cualquiera",
+      "Solo A o B"
+    ],
+    correct: "Solo AB o A",
+    topic: "Cruces con homocigotos",
+    explanation: "El padre I^AI^A solo aporta I^A. La madre I^Bi aporta I^B o i. Hijos posibles: I^AI^B (AB) o I^Ai (A). Cada uno con 50% de probabilidad."
+  }
+];
+let game5State = { round: 0, score: 0, questions: [] };
+function startGame5() {
+  game5State = { round: 0, score: 0, history: [], startTime: Date.now(), questions: shuffle(game5Questions).slice(0, 10) };
+  document.getElementById('total5').textContent = 10;
+  document.getElementById('game5-end').style.display = 'none';
+  document.getElementById('game5-content').style.display = 'block';
+  showGame5Question();
+}
+function showGame5Question() {
+  document.getElementById('score5').textContent = game5State.score;
+  document.getElementById('round5').textContent = game5State.round + 1;
+  if (game5State.round >= game5State.questions.length) { showEndScreen(5); return; }
+  const q = game5State.questions[game5State.round];
+  const svg = buildPedigreeSVG(q.scenario);
+  const html = `
+    <div class="pedigree-svg-wrap">${svg}</div>
+    <div class="scene" style="background:#FFF8E1; border-color:#FFE082;">
+      <div class="outcome" style="border-top: none; padding-top: 0; margin-top: 0; font-size: 1rem; color: #5D4037;">
+        <strong>Pregunta:</strong> ${q.question}
+      </div>
+    </div>
+    <div class="options-grid" id="game5-options"></div>
+    <div class="feedback" id="game5-feedback"></div>`;
+  document.getElementById('game5-content').innerHTML = html;
+  const optionsDiv = document.getElementById('game5-options');
+  shuffle(q.options).forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = geno(opt);
+    btn.onclick = () => answerGeneric(5, opt, q, btn);
+    optionsDiv.appendChild(btn);
+  });
+}
+</script>
+</body>
+</html>
